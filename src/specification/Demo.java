@@ -36,6 +36,21 @@ interface Specification<T> {
   boolean isSatisfied(T item);
 }
 
+class AndSpecification<T> implements Specification<T> {
+  private Specification<T> first;
+  private Specification<T> second;
+
+  public AndSpecification(Specification<T> first, Specification<T> second) {
+    this.first = first;
+    this.second = second;
+  }
+
+  @Override
+  public boolean isSatisfied(T item) {
+    return first.isSatisfied(item) && second.isSatisfied(item);
+  }
+}
+
 class ColorSpecification implements Specification<Product> {
 
   private Color color;
@@ -88,5 +103,12 @@ class Demo {
     System.out.println("Green products (better):");
     bpf.filter(products, new ColorSpecification(Color.GREEN))
         .forEach(p -> System.out.println(" - " + p.getName() + " is green"));
+
+    System.out.println("Blue large products:");
+    bpf.filter(products, new AndSpecification<>(
+        new ColorSpecification(Color.BLUE),
+        new SizeSpecification(Size.LARGE)
+    ))
+        .forEach(p -> System.out.println(" - " + p.getName() + " is blue and large"));
   }
 }
