@@ -1,4 +1,4 @@
-package specification;
+package open_closed_principle_specification;
 
 import com.sun.tools.javac.util.List;
 

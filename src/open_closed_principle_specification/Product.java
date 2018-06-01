@@ -1,4 +1,4 @@
-package specification;
+package open_closed_principle_specification;
 
 enum Color {RED, GREEN, BLUE}
 
