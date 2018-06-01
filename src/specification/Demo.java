@@ -4,48 +4,6 @@ import com.sun.tools.javac.util.List;
 
 import java.util.stream.Stream;
 
-enum Color {RED, GREEN, BLUE}
-
-enum Size {SMALL, MEDIUM, LARGE, HUGE}
-
-class Product {
-  private String name;
-  private Color color;
-  private Size size;
-
-  public Product(String name, Color color, Size size) {
-    this.name = name;
-    this.color = color;
-    this.size = size;
-  }
-
-  /* getters and setters */
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public Color getColor() {
-    return color;
-  }
-
-  public void setColor(Color color) {
-    this.color = color;
-  }
-
-  public Size getSize() {
-    return size;
-  }
-
-  public void setSize(Size size) {
-    this.size = size;
-  }
-}
-
 class ProductFiler {
   public Stream<Product> filterByColor(List<Product> products, Color color) {
     return products.stream().filter(
@@ -70,6 +28,49 @@ class ProductFiler {
   // or in other words we have to touch the source code that may have already been compiled and shipped
 }
 
+interface Filter<T> {
+  Stream<T> filter(List<T> items, Specification<T> spec);
+}
+
+interface Specification<T> {
+  boolean isSatisfied(T item);
+}
+
+class ColorSpecification implements Specification<Product> {
+
+  private Color color;
+
+  public ColorSpecification(Color color) {
+    this.color = color;
+  }
+
+  @Override
+  public boolean isSatisfied(Product product) {
+    return product.getColor() == this.color;
+  }
+}
+
+class SizeSpecification implements Specification<Product> {
+
+  private Size size;
+
+  public SizeSpecification(Size size) {
+    this.size = size;
+  }
+
+  @Override
+  public boolean isSatisfied(Product product) {
+    return product.getSize() == this.size;
+  }
+}
+
+class BetterProductFilter implements Filter<Product> {
+  @Override
+  public Stream<Product> filter(List<Product> products, Specification<Product> spec) {
+    return products.stream().filter(p -> spec.isSatisfied(p));
+  }
+}
+
 class Demo {
   public static void main(String[] args) {
     Product apple = new Product("Apple", Color.GREEN, Size.SMALL);
@@ -79,6 +80,13 @@ class Demo {
     ProductFiler pf = new ProductFiler();
     System.out.println("Green products (old):");
     pf.filterByColor(products, Color.GREEN)
+        .forEach(p -> System.out.println(" - " + p.getName() + " is green"));
+
+    // this way the two interfaces are closed for modification,
+    // but we can add new classes implementing them so as to be open for extension
+    BetterProductFilter bpf = new BetterProductFilter();
+    System.out.println("Green products (better):");
+    bpf.filter(products, new ColorSpecification(Color.GREEN))
         .forEach(p -> System.out.println(" - " + p.getName() + " is green"));
   }
 }
