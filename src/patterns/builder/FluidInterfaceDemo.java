@@ -1,32 +1,32 @@
 package patterns.builder;
 
-class Person {
+class SimplePerson {
   public String name;
   public String position;
 
   @Override
   public String toString() {
-    return "Person{" +
+    return "SimplePerson{" +
         "name='" + name + '\'' +
         ", position='" + position + '\'' +
         '}';
   }
 }
 
-class PersonBuilder<SELF extends PersonBuilder> {
-  protected Person person = new Person();
+class SimplePersonBuilder<SELF extends SimplePersonBuilder> {
+  protected SimplePerson person = new SimplePerson();
 
   public SELF withName(String name) {
     person.name = name;
     return (SELF) this;
   }
 
-  public Person build() {
+  public SimplePerson build() {
     return person;
   }
 }
 
-class EmployeeBuilder extends PersonBuilder<EmployeeBuilder> { // preserve the fluid interface
+class EmployeeBuilder extends SimplePersonBuilder<EmployeeBuilder> { // preserve the fluid interface
   public EmployeeBuilder worksAs(String position) {
     person.position = position;
     return this;
@@ -36,8 +36,8 @@ class EmployeeBuilder extends PersonBuilder<EmployeeBuilder> { // preserve the f
 public class FluidInterfaceDemo {
   public static void main(String[] args) {
     EmployeeBuilder eb = new EmployeeBuilder();
-    Person person = eb
-        .withName("Thomas")
+    SimplePerson person = eb
+        .withName("Thomas") // this method returns an instance of EmployeeBuilder
         .worksAs("Software engineer")
         .build();
     System.out.println(person);
