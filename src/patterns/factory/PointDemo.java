@@ -59,7 +59,7 @@ class Point {
   }
 }
 
-public class FactoryMethodsDemo {
+public class PointDemo {
   public static void main(String[] args) {
     Point pointA = Point.newCartesianPoint(2, 3);
     Point pointB = Point.newPolarPoint(10, 30);
