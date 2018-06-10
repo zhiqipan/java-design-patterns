@@ -50,18 +50,29 @@ class Point {
     this.y = y;
   }
 
-  public static Point newCartesianPoint(double x, double y) {
-    return new Point(x, y);
-  }
+  /* Move into PointFactory static class (use Factory instead of Factory Methods) */
+//  public static Point newCartesianPoint(double x, double y) {
+//    return new Point(x, y);
+//  }
+//
+//  public static Point newPolarPoint(double rho, double theta) {
+//    return new Point(rho * Math.cos(theta), rho * Math.sin(theta));
+//  }
 
-  public static Point newPolarPoint(double rho, double theta) {
-    return new Point(rho * Math.cos(theta), rho * Math.sin(theta));
+  static class Factory {
+    public static Point newCartesianPoint(double x, double y) {
+      return new Point(x, y);
+    }
+
+    public static Point newPolarPoint(double rho, double theta) {
+      return new Point(rho * Math.cos(theta), rho * Math.sin(theta));
+    }
   }
 }
 
 public class PointDemo {
   public static void main(String[] args) {
-    Point pointA = Point.newCartesianPoint(2, 3);
-    Point pointB = Point.newPolarPoint(10, 30);
+    Point pointA = Point.Factory.newCartesianPoint(2, 3);
+    Point pointB = Point.Factory.newPolarPoint(10, 30);
   }
 }
